@@ -1,6 +1,6 @@
-const fs = require('fs').promises;
-const inquirer = require('inquirer');
-const chalk = require('chalk')
+const fs = require("fs").promises;
+const inquirer = require("inquirer");
+const chalk = require("chalk");
 
 //проверка корректности ответа
 function correctnessResponse(answerUsers, answer) {
@@ -13,25 +13,25 @@ function correctnessResponse(answerUsers, answer) {
 async function topics() {
   const func = await inquirer.prompt([
     {
-      type: 'list',
-      name: 'team',
-      message: 'Какую тему вы хотите?',
-      choices: ['Ты точно умный?', 'Или ты не очень?'],
+      type: "list",
+      name: "team",
+      message: "Какую тему вы хотите?",
+      choices: ["Ты точно умный?", "Или ты не очень?"],
     },
   ]);
-  if (func.team === 'Ты точно умный?') {
-    return './topics/marvel.txt';
+  if (func.team === "Ты точно умный?") {
+    return "./genii.txt";
   }
-  return './topics/mems.txt';
+  return "./nesovsem.txt";
 }
 
 // Обработка принятого файла, возвращаем массив объектов
 async function digestFile(path) {
-  const arrStr = (await fs.readFile(path, 'utf-8')).split('\r\n');
+  const arrStr = (await fs.readFile(path, "utf-8")).split("\r\n");
   const arrQuestion = arrStr.filter((el, i) => i % 3 === 0);
   const arrAnswer = arrStr
-    .filter((el, i) => i % 3 !== 0 && el !== '')
-    .map((el) => el.split(', '));
+    .filter((el, i) => i % 3 !== 0 && el !== "")
+    .map((el) => el.split(", "));
   const arrObj = [];
   for (let i = 0; i < arrQuestion.length; i += 1) {
     arrObj.push({
@@ -44,24 +44,28 @@ async function digestFile(path) {
 }
 
 async function quizСonclusion(arrObj) {
-  let score = 0
+  let score = 0;
   for (let i = 0; i < arrObj.length; i += 1) {
     const func = await inquirer.prompt([
       {
-        type: 'list',
-        name: 'animal',
+        type: "list",
+        name: "animal",
         message: arrObj[i].question,
         choices: arrObj[i].choices,
       },
     ]);
     if (correctnessResponse(func.animal, arrObj[i].correctAnswer)) {
-      console.log(chalk.bgGreen('А ты умен. ООУУУЕЕЕ!!!'));
-      score++
+      console.log(chalk.bgGreen("А ты умен. ООУУУЕЕЕ!!!"));
+      score++;
     } else {
-      console.log(chalk.bgRed(`Иди учи Промисы. Правильный ответ: ${arrObj[i].correctAnswer}`));
+      console.log(
+        chalk.bgRed(
+          `Иди учи Промисы. Правильный ответ: ${arrObj[i].correctAnswer}`
+        )
+      );
     }
-  } console.log(`Итоговый счет: ${score}/${arrObj.length}`);
-
+  }
+  console.log(`Итоговый счет: ${score}/${arrObj.length}`);
 }
 
 //запуск квиза
@@ -71,4 +75,4 @@ async function start() {
   console.log(a);
 }
 
-start()
+start();
